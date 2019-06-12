@@ -13,6 +13,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     let captureSession = AVCaptureSession()
     var previewLayer:CALayer!
     var takePhoto = false
+    var ISOValues:[Float]!
+    
+    var images:[UIImage] = [UIImage]()
     
     var captureDevice:AVCaptureDevice!
     
@@ -28,7 +31,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         captureDevice = availableDevices.first
         
         // Calculating Exposure Ranges
-        let ISOValues = calculateExposureRange()
+        var calcISOValues = calculateExposureRange()
+        ISOValues = calcISOValues
         beginSession()
     }
     
@@ -66,22 +70,44 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         takePhoto = true
     }
     
+    @IBAction func saveButtonPressed(_ sender: Any) {
+//        let savedImageSelector = Selector(("imageWasSavedSuccessfully:didFinishSavingWithError:context:"))
+        
+        
+        for capture in images {
+            UIImageWriteToSavedPhotosAlbum(capture, self, nil, nil)
+        }
+    }
+    
+    
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         if takePhoto {
             takePhoto = false
             
             if let image = self.getImageFromSampleBuffer(buffer: sampleBuffer) {
+                images.append(image)
+                
+            
+                
 
-                let photoVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PhotoVC") as! PhotoViewController
-                
-                photoVC.takenPhoto = image
-                
-                DispatchQueue.main.async {
-                    self.present(photoVC, animated: true, completion: {
-                        self.stopCaptureSession()
-                    })
-                }
+//                let photoVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PhotoVC") as! PhotoViewController
+//
+//                photoVC.takenPhoto = image
+//
+//                DispatchQueue.main.async {
+//                    self.present(photoVC, animated: true, completion: {
+//                        self.stopCaptureSession()
+//                    })
+//                }
             }
+            
+            for ISO in ISOValues {
+                print("Exposure Changed to \(ISO)")
+                changeExposure(isoVal: ISO)
+                takePhoto = true
+            }
+            
+            self.stopCaptureSession()
         }
     }
     

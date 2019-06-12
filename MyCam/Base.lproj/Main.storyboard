@@ -21,6 +21,11 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" id="WWG-8K-lwS">
+                        <barButtonItem key="leftBarButtonItem" systemItem="save" id="su9-wc-O3P">
+                            <connections>
+                                <action selector="saveButtonPressed:" destination="BYZ-38-t0r" id="yet-Fk-mVD"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="camera" id="S2X-hg-0st">
                             <connections>
                                 <action selector="takePhoto:" destination="BYZ-38-t0r" id="xW1-YU-tsg"/>
@@ -57,6 +62,8 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="JOn-rV-7ap"/>
                     </view>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="imageView" destination="ANA-eN-o6Q" id="iEk-zs-nGa"/>
                     </connections>
