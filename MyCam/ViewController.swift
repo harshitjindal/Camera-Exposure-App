@@ -71,7 +71,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
     
     @IBAction func saveButtonPressed(_ sender: Any) {
-//        let savedImageSelector = Selector(("imageWasSavedSuccessfully:didFinishSavingWithError:context:"))
+        //        let savedImageSelector = Selector(("imageWasSavedSuccessfully:didFinishSavingWithError:context:"))
         
         
         for capture in images {
@@ -82,34 +82,39 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         if takePhoto {
+            //            takePhoto = false
+            
+            //            if let image = self.getImageFromSampleBuffer(buffer: sampleBuffer) {
+            //                images.append(image)
+            
+            
+            
+            
+            //                let photoVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PhotoVC") as! PhotoViewController
+            //
+            //                photoVC.takenPhoto = image
+            //
+            //                DispatchQueue.main.async {
+            //                    self.present(photoVC, animated: true, completion: {
+            //                        self.stopCaptureSession()
+            //                    })
+            //
             takePhoto = false
-            
-            if let image = self.getImageFromSampleBuffer(buffer: sampleBuffer) {
-                images.append(image)
-                
-            
-                
-
-//                let photoVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PhotoVC") as! PhotoViewController
-//
-//                photoVC.takenPhoto = image
-//
-//                DispatchQueue.main.async {
-//                    self.present(photoVC, animated: true, completion: {
-//                        self.stopCaptureSession()
-//                    })
-//                }
-            }
-            
             for ISO in ISOValues {
-                print("Exposure Changed to \(ISO)")
                 changeExposure(isoVal: ISO)
+                if let image = self.getImageFromSampleBuffer(buffer: sampleBuffer) {
+                    images.append(image)
+                }
                 takePhoto = true
             }
             
             self.stopCaptureSession()
+        
         }
     }
+    
+    
+    
     
     func getImageFromSampleBuffer(buffer:CMSampleBuffer) -> UIImage? {
         if let pixelBuffer = CMSampleBufferGetImageBuffer(buffer) {
