@@ -14,6 +14,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var previewLayer:CALayer!
     var takePhoto = false
     var ISOValues:[Float]!
+    var exposureIndex:Int = 0
     
     var images:[UIImage] = [UIImage]()
     
@@ -31,7 +32,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         captureDevice = availableDevices.first
         
         // Calculating Exposure Ranges
-        var calcISOValues = calculateExposureRange()
+        let calcISOValues = calculateExposureRange()
         ISOValues = calcISOValues
         beginSession()
     }
@@ -68,6 +69,13 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     @IBAction func takePhoto(_ sender: Any) {
         takePhoto = true
+//        for ISO in ISOValues {
+//            changeExposure(isoVal: ISO)
+//            print("take photo = true")
+//            self.takePhoto = true
+//        }
+//
+//        stopCaptureSession()
     }
     
     @IBAction func saveButtonPressed(_ sender: Any) {
@@ -81,36 +89,43 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        if takePhoto {
-            //            takePhoto = false
+        if takePhoto == true && exposureIndex < 9 {
+            var ISO = ISOValues[exposureIndex]
+            exposureIndex += 1
+            changeExposure(isoVal: ISO)
+            print("Exposure changed to \(ISO)")
             
-            //            if let image = self.getImageFromSampleBuffer(buffer: sampleBuffer) {
-            //                images.append(image)
-            
-            
-            
-            
-            //                let photoVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PhotoVC") as! PhotoViewController
-            //
-            //                photoVC.takenPhoto = image
-            //
-            //                DispatchQueue.main.async {
-            //                    self.present(photoVC, animated: true, completion: {
-            //                        self.stopCaptureSession()
-            //                    })
-            //
-            takePhoto = false
-            for ISO in ISOValues {
-                changeExposure(isoVal: ISO)
-                if let image = self.getImageFromSampleBuffer(buffer: sampleBuffer) {
-                    images.append(image)
-                }
-                takePhoto = true
+            if var capture = getImageFromSampleBuffer(buffer: sampleBuffer){
+                usleep(100)
+                images.append(capture)
             }
             
-            self.stopCaptureSession()
-        
+        } else if exposureIndex >= 9 {
+            
+            
+            takePhoto = false
+            stopCaptureSession()
+            
+            
         }
+        
+        //            takePhoto = false
+        
+        //            if let image = self.getImageFromSampleBuffer(buffer: sampleBuffer) {
+        //                images.append(image)
+        
+        
+        
+        
+        //                let photoVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PhotoVC") as! PhotoViewController
+        //
+        //                photoVC.takenPhoto = image
+        //
+        //                DispatchQueue.main.async {
+        //                    self.present(photoVC, animated: true, completion: {
+        //                        self.stopCaptureSession()
+        //                    })
+        //
     }
     
     
